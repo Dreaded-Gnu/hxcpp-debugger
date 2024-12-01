@@ -22,14 +22,10 @@ import cpp.vm.Debugger;
 import debugger.IController;
 import haxe.CallStack;
 
-#if cpp
-import cpp.vm.Deque;
-import cpp.vm.Mutex;
-import cpp.vm.Thread;
-#elseif neko
-import neko.vm.Deque;
-import neko.vm.Mutex;
-import neko.vm.Thread;
+#if (target.threaded)
+import sys.thread.Deque;
+import sys.thread.Mutex;
+import sys.thread.Thread;
 #else
 #error "DebuggerThread supported only for cpp and neko targets"
 #end
@@ -1240,7 +1236,7 @@ private class TypeHelpers
         case TNull:
             return "NULL";
         case TObject:
-            if (Std.is(value, Class)) {
+            if (value is Class) {
                 return "Class<" + getClassName(cast value) + ">";
             }
             return "Anonymous";
@@ -1285,7 +1281,7 @@ private class TypeHelpers
         case TFunction:
             return Std.string(value);
         case TObject:
-            if (Std.is(value, Class)) {
+            if (value is Class) {
                 return ("Class<" + Std.string(value) + ">" +
                         getClassValueString(value, indent));
             }
@@ -1429,7 +1425,7 @@ private class TypeHelpers
             return TypeBool;
 
         case TObject:
-            if (Std.is(value, Class)) {
+            if (value is Class) {
                 return TypeClass(getClassName(cast value));
             }
             var list : StructuredValueTypeList = Terminator;

@@ -21,9 +21,8 @@ package debugger;
 import debugger.HaxeProtocol;
 import debugger.IController;
 
-#if cpp
-import cpp.vm.Thread;
-import cpp.vm.Mutex;
+#if (target.threaded && cpp)
+import sys.thread.Thread;
 import cpp.vm.Debugger;
 #else
 #error "HaxeRemote supported only for cpp targets"

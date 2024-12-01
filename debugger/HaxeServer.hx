@@ -22,12 +22,9 @@ import debugger.CommandLineController;
 import debugger.HaxeProtocol;
 import debugger.IController;
 
-#if cpp
-import cpp.vm.Deque;
-import cpp.vm.Thread;
-#elseif neko
-import neko.vm.Deque;
-import neko.vm.Thread;
+#if (target.threaded)
+import sys.thread.Deque;
+import sys.thread.Thread;
 #else
 #error "AdvancedDebuggerServer supported only for cpp and neko targets"
 #end
@@ -41,7 +38,7 @@ import neko.vm.Thread;
  **/
 class HaxeServer
 {
-    public static function main()
+    public static function main():Void
     {
         var host : String = null;
         var port : Int = 6972;
@@ -55,7 +52,7 @@ class HaxeServer
             case "-host":
                 if (i == (argv.length - 1)) {
                     Sys.println("ERROR: -port option requires an argument.");
-                    return -1;
+                    return;
                 }
                 else {
                     i = iter.next();
@@ -64,7 +61,7 @@ class HaxeServer
             case "-port":
                 if (i == (argv.length - 1)) {
                     Sys.println("ERROR: -port option requires an argument.");
-                    return -1;
+                    return;
                 }
                 else {
                     i = iter.next();
@@ -85,8 +82,6 @@ class HaxeServer
         }
 
         new HaxeServer(new CommandLineController(), host, port);
-
-        return 0;
     }
 
     /**
